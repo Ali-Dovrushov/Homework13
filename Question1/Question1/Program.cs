@@ -23,6 +23,12 @@ namespace Question1
 
     class Program
     {
+        public static bool forCheck;
+        public static bool forStart;
+        public static string passChecker;
+        public static string myPathForOS = "/Users/dovrushov/myPathForOS/";
+        public static string myPathForWin = @"C:\SomeDir";
+
         static int CheckerIdNumber()
         {
             int number;
@@ -43,8 +49,6 @@ namespace Question1
             }
         }
 
-        public static string passChecker;
-
         public static string CheckerPassword()
         {
             passChecker = Console.ReadLine();
@@ -53,22 +57,31 @@ namespace Question1
             {
                 for (int i = 0; i < passChecker.Length; i++)
                 {
-                    if ((passChecker[0] != 'a' || passChecker[1] != 'z' || passChecker[2] != 'e') && (passChecker[0] != 'A' || passChecker[1] != 'Z' || passChecker[2] != 'E') || passChecker.Length <= 0)
+                    if ((passChecker[0] != 'a' || passChecker[1] != 'z' || passChecker[2] != 'e')
+                        &&
+                        (passChecker[0] != 'A' || passChecker[1] != 'Z' || passChecker[2] != 'E')
+                        ||
+                        passChecker.Length <= 0)
                     {
-                        Console.WriteLine("Incorrect type, please first type AZE or aze");
+                        Console.Write("Incorrect type, please first type AZE or aze and 8 numbers(AZE12345678): ");
                         CheckerPassword();
                     }
 
-                    else
+                    for (int j = 3; j < passChecker.Length; j++)
                     {
-                        break;
+                        if (!Char.IsNumber(passChecker[j]))
+                        {
+                            Console.Write("Please enter AZE afret 8 digits number: ");
+                            CheckerPassword();
+                            break;
+                        }
                     }
                 }
             }
 
             else
             {
-                Console.Write("Incorrect type, please first type AZE or aze and 8 numbers: ");
+                Console.Write("Incorrect type, please first type AZE or aze and 8 numbers(AZE12345678): ");
 
                 CheckerPassword();
             }
@@ -116,9 +129,7 @@ namespace Question1
             }
         }
 
-        public static string myPath = "/Users/dovrushov/myPath/";
-
-        public static void Arg1()
+        public static void NewTxtFileForOS()
         {
             Console.Write("Enter ID number: ");
             int idNumber = CheckerIdNumber();
@@ -131,96 +142,329 @@ namespace Question1
 
             Client client = new Client(idNumber, passportNumber, balance);
 
-            using (StreamWriter forWrite = new StreamWriter($"{ myPath }\nNote1.txt", false, System.Text.Encoding.Default))
+            using (StreamWriter forWrite = new StreamWriter($"{ myPathForOS }\nNote1.txt", true, System.Text.Encoding.Default))
             {
                 forWrite.WriteLine($"№{ client.IDNumber }; { client.PassportNumber }; { client.Balance };");
             }
 
-            using (StreamReader forRead = new StreamReader($"{ myPath }\nNote1.txt"))
+            using (StreamReader forRead = new StreamReader($"{ myPathForOS }\nNote1.txt"))
             {
                 Console.WriteLine(forRead.ReadToEnd());
             }
         }
 
-        public static void Arg()
+        public static void NewTxtFileForWin()
         {
-            using (StreamWriter forWrite = new StreamWriter($"{ myPath }\nNote.txt", false, System.Text.Encoding.Default))
+            Console.Write("Enter ID number: ");
+            int idNumber = CheckerIdNumber();
+
+            Console.Write("Enter passport number(AZE 8 digits): ");
+            string passportNumber = CheckerPassword();
+
+            Console.Write("Enter amount: ");
+            double balance = CheckerBalance();
+
+            Client client = new Client(idNumber, passportNumber, balance);
+
+            using (StreamWriter forWrite = new StreamWriter($"{ myPathForWin }/Note1.txt", true, System.Text.Encoding.Default))
+            {
+                forWrite.WriteLine($"№{ client.IDNumber }; { client.PassportNumber }; { client.Balance };");
+            }
+
+            using (StreamReader forRead = new StreamReader($"{ myPathForWin }/Note1.txt"))
+            {
+                Console.WriteLine(forRead.ReadToEnd());
+            }
+        }
+
+        public static void OldTxtFileForOS()
+        {
+            using (StreamWriter forWrite = new StreamWriter($"{ myPathForOS }\nNote.txt", false, System.Text.Encoding.Default))
             {
                 forWrite.WriteLine($"№1; AZE12345678; 22.30\n" +
                     $"№25; AZE87652134; 50.00\n" +
                     $"№34; AZE87652134; 12.35");
             }
 
-            using (StreamReader forRead = new StreamReader($"{ myPath }\nNote.txt"))
+            using (StreamReader forRead = new StreamReader($"{ myPathForOS }\nNote.txt"))
             {
                 Console.WriteLine(forRead.ReadToEnd());
             }
         }
 
-        public static bool forStart;
+        public static void OldTxtFileForWin()
+        {
+            using (StreamWriter forWrite = new StreamWriter($"{ myPathForWin }/Note.txt", false, System.Text.Encoding.Default))
+            {
+                forWrite.WriteLine($"№1; AZE12345678; 22.30\n" +
+                    $"№25; AZE87652134; 50.00\n" +
+                    $"№34; AZE87652134; 12.35");
+            }
+
+            using (StreamReader forRead = new StreamReader($"{ myPathForWin }/Note.txt"))
+            {
+                Console.WriteLine(forRead.ReadToEnd());
+            }
+        }
+
+        public static void ChooseInfoForOS()
+        {
+            do
+            {
+                string continueYesOrNo = Console.ReadLine();
+                switch (continueYesOrNo)
+                {
+                    case "Y":
+                        {
+                            OldTxtFileForOS();
+                            forCheck = true;
+
+                            break;
+                        }
+                    case "y":
+                        {
+                            OldTxtFileForOS();
+                            forCheck = true;
+
+                            break;
+                        }
+                    case "N":
+                        {
+                            forCheck = true;
+                            break;
+                        }
+                    case "n":
+                        {
+                            forCheck = true;
+                            break;
+                        }
+                    default:
+                        {
+                            Console.Write("You enter incorrect symbol, please enter Y/y or N/n: ");
+                            forCheck = false;
+
+                            continue;
+                        }
+                }
+            } while (forCheck == false);
+        }
+
+        public static void ChooseInfoForWin()
+        {
+            do
+            {
+                string continueYesOrNo = Console.ReadLine();
+                switch (continueYesOrNo)
+                {
+                    case "Y":
+                        {
+                            OldTxtFileForWin();
+                            forCheck = true;
+
+                            break;
+                        }
+                    case "y":
+                        {
+                            OldTxtFileForWin();
+                            forCheck = true;
+
+                            break;
+                        }
+                    case "N":
+                        {
+                            forCheck = true;
+                            break;
+                        }
+                    case "n":
+                        {
+                            forCheck = true;
+                            break;
+                        }
+                    default:
+                        {
+                            Console.Write("You enter incorrect symbol, please enter Y/y or N/n: ");
+                            forCheck = false;
+
+                            continue;
+                        }
+                }
+            } while (forCheck == false);
+        }
+
+        public static void ChooseLastInfoForOS()
+        {
+            do
+            {
+                string continueYesOrNo = Console.ReadLine();
+                switch (continueYesOrNo)
+                {
+                    case "Y":
+                        {
+                            NewTxtFileForOS();
+                            forCheck = true;
+
+                            break;
+                        }
+                    case "y":
+                        {
+                            NewTxtFileForOS();
+                            forCheck = true;
+
+                            break;
+                        }
+                    case "N":
+                        {
+                            forCheck = true;
+                            break;
+                        }
+                    case "n":
+                        {
+                            forCheck = true;
+                            break;
+                        }
+                    default:
+                        {
+                            Console.Write("You enter incorrect symbol, please enter Y/y or N/n: ");
+                            forCheck = false;
+
+                            continue;
+                        }
+                }
+            } while (forCheck == false);
+        }
+
+        public static void ChooseLastInfoForWin()
+        {
+            do
+            {
+                string continueYesOrNo = Console.ReadLine();
+                switch (continueYesOrNo)
+                {
+                    case "Y":
+                        {
+                            NewTxtFileForWin();
+                            forCheck = true;
+
+                            break;
+                        }
+                    case "y":
+                        {
+                            NewTxtFileForWin();
+                            forCheck = true;
+
+                            break;
+                        }
+                    case "N":
+                        {
+                            forCheck = true;
+                            break;
+                        }
+                    case "n":
+                        {
+                            forCheck = true;
+                            break;
+                        }
+                    default:
+                        {
+                            Console.Write("You enter incorrect symbol, please enter Y/y or N/n: ");
+                            forCheck = false;
+
+                            continue;
+                        }
+                }
+            } while (forCheck == false);
+        }
+
         static void Main(string[] args)
         {
             do
             {
-                Console.Write("Please choose\n1)Windows\n2)MacOS\nYour choose: ");
+                Console.Write("Please choose\n1)Windows\n2)MacOS\n3)Exit\nYour choose: ");
                 byte choose = NumberCheckerForByte();
 
                 switch (choose)
                 {
                     case 1:
                         {
-
-                            forStart = true;
-                            break;
-                        }
-                    case 2:
-                        {
-                            //string myPath = "/Users/dovrushov/myPath/";
-
-                            DirectoryInfo pathInfo = new DirectoryInfo(myPath);
+                            DirectoryInfo pathInfo = new DirectoryInfo(myPathForWin);
                             if (!pathInfo.Exists)
                             {
                                 pathInfo.Create();
                             }
 
-                            Arg();
-                            //Arg
+                            Console.Write("Want to read info in your .txt file(Enter Y/y or N/n): ");
+                            ChooseInfoForWin();
 
-                            //using (StreamWriter forWrite = new StreamWriter($"{ myPath }\nNote.txt", false, System.Text.Encoding.Default))
-                            //{
-                            //    forWrite.WriteLine($"№1; AZE12345678; 22.30\n" +
-                            //        $"№25; AZE87652134; 50.00\n" +
-                            //        $"№34; AZE87652134; 12.35");
-                            //}
+                            Console.Write("Want to write new info in your new .txt file(Enter Y/y or N/n): ");
+                            ChooseLastInfoForWin();
 
-                            //using (StreamReader forRead = new StreamReader($"{ myPath }\nNote.txt"))
-                            //{
-                            //    Console.WriteLine(forRead.ReadToEnd());
-                            //}
+                            Console.Write("Want to continue(Enter Y/y or N/n): ");
+                            bool checker;
+                            do
+                            {
+                                string choiser = Console.ReadLine();
+                                if (choiser == "Y" || choiser == "y")
+                                {
+                                    checker = true;
+                                    forStart = false;
+                                }
+                                else if (choiser == "N" || choiser == "n")
+                                {
+                                    Console.WriteLine("Have a good day :)");
+                                    checker = true;
+                                    forStart = true;
+                                }
+                                else
+                                {
+                                    Console.Write("You enter incorrect symbol, please enter Y/y or N/n: ");
+                                    checker = false;
+                                }
+                            } while (checker == false);
 
-                            Arg1();
-                            //Arg1
-                            //Console.Write("Enter ID number: ");
-                            //int idNumber = CheckerIdNumber();
+                            break;
+                        }
+                    case 2:
+                        {
+                            DirectoryInfo pathInfo = new DirectoryInfo(myPathForOS);
+                            if (!pathInfo.Exists)
+                            {
+                                pathInfo.Create();
+                            }
 
-                            //Console.Write("Enter passport number(AZE 8 digits): ");
-                            //string passportNumber = CheckerPassword();
+                            Console.Write("Want to read info in your .txt file(Enter Y/y or N/n): ");
+                            ChooseInfoForOS();
 
-                            //Console.Write("Enter amount: ");
-                            //double balance = CheckerBalance();
+                            Console.Write("Want to write new info in youur new .txt file(Enter Y/y or N/n): ");
+                            ChooseLastInfoForOS();
 
-                            //Client client = new Client(idNumber, passportNumber, balance);
+                            Console.Write("Want to continue(Enter Y/y or N/n): ");
+                            bool checker;
+                            do
+                            {
+                                string choiser = Console.ReadLine();
+                                if (choiser == "Y" || choiser == "y")
+                                {
+                                    checker = true;
+                                    forStart = false;
+                                }
+                                else if (choiser == "N" || choiser == "n")
+                                {
+                                    Console.WriteLine("Have a good day :)");
+                                    checker = true;
+                                    forStart = true;
+                                }
+                                else
+                                {
+                                    Console.Write("You enter incorrect symbol, please enter Y/y or N/n: ");
+                                    checker = false;
+                                }
+                            } while (checker == false);
 
-                            //using (StreamWriter forWrite = new StreamWriter($"{ myPath }\nNote1.txt", false, System.Text.Encoding.Default))
-                            //{
-                            //    forWrite.WriteLine($"№{ client.IDNumber }; { client.PassportNumber }; { client.Balance };");
-                            //}
-
-                            //using (StreamReader forRead = new StreamReader($"{ myPath }\nNote1.txt"))
-                            //{
-                            //    Console.WriteLine(forRead.ReadToEnd());
-                            //}
-
+                            break;
+                        }
+                    case 3:
+                        {
+                            Console.WriteLine("Have a good day :)");
                             forStart = true;
                             break;
                         }
@@ -231,6 +475,7 @@ namespace Question1
                             continue;
                         }
                 }
+
             } while (forStart == false);
             Console.ReadKey();
         }
